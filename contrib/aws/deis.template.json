@@ -134,8 +134,14 @@
     },
     "SubnetConfig" : {
       "VPC"     : { "CIDR" : "10.21.0.0/16" },
-      "Subnet1" : { "CIDR" : "10.21.1.0/24" },
-      "Subnet2" : { "CIDR" : "10.21.2.0/24" }
+      "Subnet1" : { "CIDR" : "10.21.0.0/24" },
+      "Subnet2" : { "CIDR" : "10.21.2.0/24" },
+      "Subnet3" : { "CIDR" : "10.21.4.0/24" },
+      "Subnet4" : { "CIDR" : "10.21.6.0/24" },
+      "PrivateSubnet1" : { "CIDR" : "10.21.1.0/24" },
+      "PrivateSubnet2" : { "CIDR" : "10.21.3.0/24" },
+      "PrivateSubnet3" : { "CIDR" : "10.21.5.0/24" },
+      "PrivateSubnet4" : { "CIDR" : "10.21.7.0/24" }
     }
   },
 
@@ -170,7 +176,7 @@
         "CidrBlock" : { "Fn::FindInMap" : [ "SubnetConfig", "Subnet1", "CIDR" ]},
         "Tags" : [
           { "Key" : "Application", "Value" : "Deis" },
-          { "Key" : "Network", "Value" : "Private" }
+          { "Key" : "Network", "Value" : "Public" }
         ]
       }
     },
@@ -180,6 +186,78 @@
         "VpcId" : { "Ref" : "VPC" },
         "AvailabilityZone": { "Fn::Select" : [ 1, { "Fn::GetAZs" : "" } ] },
         "CidrBlock" : { "Fn::FindInMap" : [ "SubnetConfig", "Subnet2", "CIDR" ]},
+        "Tags" : [
+          { "Key" : "Application", "Value" : "Deis" },
+          { "Key" : "Network", "Value" : "Public" }
+        ]
+      }
+    },
+    "Subnet3" : {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+        "VpcId" : { "Ref" : "VPC" },
+        "AvailabilityZone": { "Fn::Select" : [ 3, { "Fn::GetAZs" : "" } ] },
+        "CidrBlock" : { "Fn::FindInMap" : [ "SubnetConfig", "Subnet3", "CIDR" ]},
+        "Tags" : [
+          { "Key" : "Application", "Value" : "Deis" },
+          { "Key" : "Network", "Value" : "Public" }
+        ]
+      }
+    },
+    "Subnet4" : {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+        "VpcId" : { "Ref" : "VPC" },
+        "AvailabilityZone": { "Fn::Select" : [ 4, { "Fn::GetAZs" : "" } ] },
+        "CidrBlock" : { "Fn::FindInMap" : [ "SubnetConfig", "Subnet4", "CIDR" ]},
+        "Tags" : [
+          { "Key" : "Application", "Value" : "Deis" },
+          { "Key" : "Network", "Value" : "Public" }
+        ]
+      }
+    },
+    "PrivateSubnet1" : {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+        "VpcId" : { "Ref" : "VPC" },
+        "AvailabilityZone": { "Fn::Select" : [ 0, { "Fn::GetAZs" : "" } ] },
+        "CidrBlock" : { "Fn::FindInMap" : [ "SubnetConfig", "PrivateSubnet1", "CIDR" ]},
+        "Tags" : [
+          { "Key" : "Application", "Value" : "Deis" },
+          { "Key" : "Network", "Value" : "Private" }
+        ]
+      }
+    },
+    "PrivateSubnet2" : {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+        "VpcId" : { "Ref" : "VPC" },
+        "AvailabilityZone": { "Fn::Select" : [ 1, { "Fn::GetAZs" : "" } ] },
+        "CidrBlock" : { "Fn::FindInMap" : [ "SubnetConfig", "PrivateSubnet2", "CIDR" ]},
+        "Tags" : [
+          { "Key" : "Application", "Value" : "Deis" },
+          { "Key" : "Network", "Value" : "Private" }
+        ]
+      }
+    },
+    "PrivateSubnet3" : {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+        "VpcId" : { "Ref" : "VPC" },
+        "AvailabilityZone": { "Fn::Select" : [ 3, { "Fn::GetAZs" : "" } ] },
+        "CidrBlock" : { "Fn::FindInMap" : [ "SubnetConfig", "PrivateSubnet3", "CIDR" ]},
+        "Tags" : [
+          { "Key" : "Application", "Value" : "Deis" },
+          { "Key" : "Network", "Value" : "Private" }
+        ]
+      }
+    },
+    "PrivateSubnet4" : {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+        "VpcId" : { "Ref" : "VPC" },
+        "AvailabilityZone": { "Fn::Select" : [ 4, { "Fn::GetAZs" : "" } ] },
+        "CidrBlock" : { "Fn::FindInMap" : [ "SubnetConfig", "PrivateSubnet4", "CIDR" ]},
         "Tags" : [
           { "Key" : "Application", "Value" : "Deis" },
           { "Key" : "Network", "Value" : "Private" }
@@ -236,16 +314,34 @@
         "RouteTableId" : { "Ref" : "PublicRouteTable" }
       }
     },
+    "Subnet3RouteTableAssociation" : {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "SubnetId" : { "Ref" : "Subnet3" },
+        "RouteTableId" : { "Ref" : "PublicRouteTable" }
+      }
+    },
+    "Subnet4RouteTableAssociation" : {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "SubnetId" : { "Ref" : "Subnet4" },
+        "RouteTableId" : { "Ref" : "PublicRouteTable" }
+      }
+    },
     "CoreOSServerAutoScale": {
       "Type": "AWS::AutoScaling::AutoScalingGroup",
       "Properties": {
         "AvailabilityZones": [
           { "Fn::GetAtt" : [ "Subnet1", "AvailabilityZone" ] },
-          { "Fn::GetAtt" : [ "Subnet2", "AvailabilityZone" ] }
+          { "Fn::GetAtt" : [ "Subnet2", "AvailabilityZone" ] },
+          { "Fn::GetAtt" : [ "Subnet3", "AvailabilityZone" ] },
+          { "Fn::GetAtt" : [ "Subnet4", "AvailabilityZone" ] }
         ],
         "VPCZoneIdentifier": [
           { "Ref" : "Subnet1" },
-          { "Ref" : "Subnet2" }
+          { "Ref" : "Subnet2" },
+          { "Ref" : "Subnet3" },
+          { "Ref" : "Subnet4" }
         ],
         "LaunchConfigurationName": {"Ref": "CoreOSServerLaunchConfig"},
         "MinSize": "3",
@@ -306,7 +402,9 @@
         },
         "Subnets": [
           { "Ref" : "Subnet1" },
-          { "Ref" : "Subnet2" }
+          { "Ref" : "Subnet2" },
+          { "Ref" : "Subnet3" },
+          { "Ref" : "Subnet4" }
         ],
         "Policies" : [{
            "PolicyName" : "EnableProxyProtocol",
