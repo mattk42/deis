@@ -347,12 +347,6 @@
     "CoreOSServerAutoScale": {
       "Type": "AWS::AutoScaling::AutoScalingGroup",
       "Properties": {
-        "AvailabilityZones": [
-          { "Fn::GetAtt" : [ "Subnet1", "AvailabilityZone" ] },
-          { "Fn::GetAtt" : [ "Subnet2", "AvailabilityZone" ] },
-          { "Fn::GetAtt" : [ "Subnet3", "AvailabilityZone" ] },
-          { "Fn::GetAtt" : [ "Subnet4", "AvailabilityZone" ] }
-        ],
         "VPCZoneIdentifier": 
           { "Fn::If": [ "Has4AvailabilityZones", [{ "Ref" : "Subnet1" },{ "Ref" : "Subnet2" },{ "Ref" : "Subnet3" },{ "Ref" : "Subnet4" }],
              { "Fn::If": ["Has3AvailabilityZones", [{ "Ref" : "Subnet1" },{ "Ref" : "Subnet2" },{ "Ref" : "Subnet3" }],
