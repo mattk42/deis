@@ -2,5 +2,33 @@
     {
         "ParameterKey":     "KeyPair",
         "ParameterValue":   "deis"
+    },
+    {
+        "ParameterKey":     "ClusterSize",
+        "ParameterValue":   "5"
+    },
+    {
+        "ParameterKey":     "IamInstanceProfile",
+        "ParameterValue":   "spheroku"
+    },
+    {
+        "ParameterKey":     "InstanceType",
+        "ParameterValue":   "m4.2xlarge"
+    },
+    {
+        "ParameterKey":     "RootVolumeSize",
+        "ParameterValue":   "100"
+    },
+    {
+        "ParameterKey":     "DockerVolumeSize",
+        "ParameterValue":   "1000"
+    },
+    {
+        "ParameterKey":     "EC2VirtualizationType",
+        "ParameterValue":   "HVM"
+    },
+    {
+        "ParameterKey":     "NumAvailabilityZones",
+        "ParameterValue":   "4"
     }
 ]
