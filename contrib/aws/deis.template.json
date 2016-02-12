@@ -149,8 +149,7 @@
       "PrivateSubnet2" : { "CIDR" : "10.21.3.0/24" },
       "PrivateSubnet3" : { "CIDR" : "10.21.5.0/24" },
       "PrivateSubnet4" : { "CIDR" : "10.21.7.0/24" }
-    },
-    "SubnetList" : { "2": { "Subnets": [{ "Ref" : "Subnet1" },{ "Ref" : "Subnet2" }]}, "3": { "Subnets": [{ "Ref" : "Subnet1" },{ "Ref" : "Subnet2" },{ "Ref" : "Subnet3" }]}, "4": { "Subnets": [{ "Ref" : "Subnet1" },{ "Ref" : "Subnet2" },{ "Ref" : "Subnet3" },{ "Ref" : "Subnet4" }]} }
+    }
   },
 
   "Conditions" : {
@@ -165,6 +164,7 @@
     "Has4AvailabilityZones" : {"Fn::Equals" : [{"Ref" : "NumAvailabilityZones"}, "4"]},
     "Has3AvailabilityZones" : {"Fn::Or" : [{"Fn::Equals" : [{"Ref" : "NumAvailabilityZones"}, "3"]}, {"Fn::Equals" : [{"Ref" : "NumAvailabilityZones"}, "4"]}]}
   },
+
 
   "Resources" : {
     "VPC" : {
@@ -353,7 +353,12 @@
           { "Fn::GetAtt" : [ "Subnet3", "AvailabilityZone" ] },
           { "Fn::GetAtt" : [ "Subnet4", "AvailabilityZone" ] }
         ],
-        "VPCZoneIdentifier": { "Fn::FindInMap" : [ "SubnetList", {"Ref": "NumAvailabilityZones" }, "Subnets" ] },
+        "VPCZoneIdentifier": 
+          { "Fn::If": [ "Has4AvailabilityZones", [{ "Ref" : "Subnet1" },{ "Ref" : "Subnet2" },{ "Ref" : "Subnet3" },{ "Ref" : "Subnet4" }],
+             { "Fn::If": ["Has3AvailabilityZones", [{ "Ref" : "Subnet1" },{ "Ref" : "Subnet2" },{ "Ref" : "Subnet3" }],
+                [{ "Ref" : "Subnet1" },{ "Ref" : "Subnet2" }]
+             ]}
+          ]},
         "LaunchConfigurationName": {"Ref": "CoreOSServerLaunchConfig"},
         "MinSize": "3",
         "MaxSize": "12",
@@ -411,7 +416,12 @@
           "Timeout": "5",
           "UnhealthyThreshold": "2"
         },
-        "Subnets": { "Fn::FindInMap" : [ "SubnetList", {"Ref": "NumAvailabilityZones" }, "Subnets" ] },
+        "Subnets": 
+          { "Fn::If": [ "Has4AvailabilityZones", [{ "Ref" : "Subnet1" },{ "Ref" : "Subnet2" },{ "Ref" : "Subnet3" },{ "Ref" : "Subnet4" }],
+             { "Fn::If": ["Has3AvailabilityZones", [{ "Ref" : "Subnet1" },{ "Ref" : "Subnet2" },{ "Ref" : "Subnet3" }],
+                [{ "Ref" : "Subnet1" },{ "Ref" : "Subnet2" }]
+             ]}
+          ]},
         "Policies" : [{
            "PolicyName" : "EnableProxyProtocol",
            "PolicyType" : "ProxyProtocolPolicyType",
